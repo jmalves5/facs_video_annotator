@@ -29,6 +29,7 @@ class GUIBuilder:
         # Build sections
         self._build_file_section(main_container)
         self._build_video_section(main_container)
+        self._build_timestamp_section(main_container)
         self._build_navigation_section(main_container)
         self._build_annotation_section(main_container)
         self._build_status_bar(main_container)
@@ -64,6 +65,8 @@ class GUIBuilder:
         video_frame.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 15))
         video_frame.columnconfigure(0, weight=1)
         video_frame.rowconfigure(0, weight=0)
+        video_frame.rowconfigure(1, weight=0)
+        video_frame.rowconfigure(2, weight=0)
         
         # Canvas for video display with 16:9 aspect ratio by default
         # Will be adjusted based on actual video aspect ratio when loaded
@@ -96,73 +99,74 @@ class GUIBuilder:
             width=15
         )
         self.widgets['nav_scale'].grid(row=0, column=0, sticky=(tk.W, tk.E), padx=10)
-        
+    
+    def _build_timestamp_section(self, parent):
+        """Build timestamp display section"""
         # Timestamp display with modern styling
-        timestamp_frame = ttk.Frame(video_frame)
-        timestamp_frame.grid(row=2, column=0, pady=(5, 0))
+        timestamp_frame = ttk.Frame(parent, padding="10")
+        timestamp_frame.grid(row=2, column=0, sticky=(tk.W, tk.E), pady=(5, 10))
         
-        ttk.Label(timestamp_frame, text="Current Timestamp:", 
+        # Center the content
+        timestamp_frame.columnconfigure(0, weight=1)
+        
+        content_frame = ttk.Frame(timestamp_frame)
+        content_frame.grid(row=0, column=0)
+        
+        ttk.Label(content_frame, text="Current Timestamp:", 
                  font=("Arial", 10)).grid(row=0, column=0, padx=5)
-        self.widgets['timestamp_label'] = ttk.Label(timestamp_frame, text="00:00:00.000", 
+        self.widgets['timestamp_label'] = ttk.Label(content_frame, text="00:00:00.000", 
                                                      font=("Arial", 18, "bold"),
                                                      foreground="#007acc")
         self.widgets['timestamp_label'].grid(row=0, column=1, padx=5)
         
-        ttk.Label(timestamp_frame, text="Frame:", 
+        ttk.Label(content_frame, text="Frame:", 
                  font=("Arial", 10)).grid(row=0, column=2, padx=(20, 5))
-        self.widgets['frame_label'] = ttk.Label(timestamp_frame, text="0 / 0", 
+        self.widgets['frame_label'] = ttk.Label(content_frame, text="0 / 0", 
                                                 font=("Arial", 14))
         self.widgets['frame_label'].grid(row=0, column=3, padx=5)
     
     def _build_navigation_section(self, parent):
         """Build navigation controls section"""
         nav_frame = ttk.LabelFrame(parent, text="Navigation Controls", padding="10")
-        nav_frame.grid(row=2, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        nav_frame.grid(row=3, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        nav_frame.columnconfigure(0, weight=1)
         
-        # Playback controls
-        playback_nav = ttk.Frame(nav_frame)
-        playback_nav.grid(row=0, column=0, pady=(0, 8))
+        # First line: Time skip controls with play/pause in center
+        first_line = ttk.Frame(nav_frame)
+        first_line.grid(row=0, column=0, pady=(0, 8))
         
-        ttk.Label(playback_nav, text="Playback:", 
-                 font=("Arial", 11, "bold")).grid(row=0, column=0, padx=(0, 10))
-        self.widgets['play_btn'] = ttk.Button(playback_nav, text="▶ Play", width=14, 
+        self.widgets['skip_30s_back_btn'] = ttk.Button(first_line, text="<< 30s", width=8)
+        self.widgets['skip_30s_back_btn'].grid(row=0, column=0, padx=2)
+        self.widgets['skip_5s_back_btn'] = ttk.Button(first_line, text="< 5s", width=8)
+        self.widgets['skip_5s_back_btn'].grid(row=0, column=1, padx=2)
+        self.widgets['skip_1s_back_btn'] = ttk.Button(first_line, text="< 1s", width=8)
+        self.widgets['skip_1s_back_btn'].grid(row=0, column=2, padx=2)
+        
+        # Play/Pause button in center
+        self.widgets['play_btn'] = ttk.Button(first_line, text="▶ Play", width=14, 
                                              style="Accent.TButton")
-        self.widgets['play_btn'].grid(row=0, column=1, padx=2)
+        self.widgets['play_btn'].grid(row=0, column=3, padx=10)
         
-        # Frame navigation
-        frame_nav = ttk.Frame(nav_frame)
-        frame_nav.grid(row=1, column=0, pady=(0, 8))
-        
-        ttk.Label(frame_nav, text="Frame:", 
-                 font=("Arial", 11, "bold")).grid(row=0, column=0, padx=(0, 10))
-        self.widgets['prev_frame_btn'] = ttk.Button(frame_nav, text="◄ Previous", width=12)
-        self.widgets['prev_frame_btn'].grid(row=0, column=1, padx=2)
-        self.widgets['next_frame_btn'] = ttk.Button(frame_nav, text="Next ►", width=12)
-        self.widgets['next_frame_btn'].grid(row=0, column=2, padx=2)
-        
-        # Time skip navigation
-        time_nav = ttk.Frame(nav_frame)
-        time_nav.grid(row=2, column=0, pady=0)
-        
-        ttk.Label(time_nav, text="Skip:", 
-                 font=("Arial", 11, "bold")).grid(row=0, column=0, padx=(0, 10))
-        self.widgets['skip_30s_back_btn'] = ttk.Button(time_nav, text="<< 30s", width=8)
-        self.widgets['skip_30s_back_btn'].grid(row=0, column=1, padx=2)
-        self.widgets['skip_5s_back_btn'] = ttk.Button(time_nav, text="< 5s", width=8)
-        self.widgets['skip_5s_back_btn'].grid(row=0, column=2, padx=2)
-        self.widgets['skip_1s_back_btn'] = ttk.Button(time_nav, text="< 1s", width=8)
-        self.widgets['skip_1s_back_btn'].grid(row=0, column=3, padx=2)
-        self.widgets['skip_1s_fwd_btn'] = ttk.Button(time_nav, text="1s >", width=8)
+        self.widgets['skip_1s_fwd_btn'] = ttk.Button(first_line, text="1s >", width=8)
         self.widgets['skip_1s_fwd_btn'].grid(row=0, column=4, padx=2)
-        self.widgets['skip_5s_fwd_btn'] = ttk.Button(time_nav, text="5s >", width=8)
+        self.widgets['skip_5s_fwd_btn'] = ttk.Button(first_line, text="5s >", width=8)
         self.widgets['skip_5s_fwd_btn'].grid(row=0, column=5, padx=2)
-        self.widgets['skip_30s_fwd_btn'] = ttk.Button(time_nav, text="30s >>", width=8)
+        self.widgets['skip_30s_fwd_btn'] = ttk.Button(first_line, text="30s >>", width=8)
         self.widgets['skip_30s_fwd_btn'].grid(row=0, column=6, padx=2)
+        
+        # Second line: Frame navigation
+        second_line = ttk.Frame(nav_frame)
+        second_line.grid(row=1, column=0, pady=0)
+        
+        self.widgets['prev_frame_btn'] = ttk.Button(second_line, text="◄ Previous Frame", width=18)
+        self.widgets['prev_frame_btn'].grid(row=0, column=0, padx=5)
+        self.widgets['next_frame_btn'] = ttk.Button(second_line, text="Next Frame ►", width=18)
+        self.widgets['next_frame_btn'].grid(row=0, column=1, padx=5)
     
     def _build_annotation_section(self, parent):
         """Build annotation section"""
         annotation_frame = ttk.LabelFrame(parent, text="Annotation", padding="10")
-        annotation_frame.grid(row=3, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        annotation_frame.grid(row=4, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         annotation_frame.columnconfigure(1, weight=1)
         
         # Annotation entry
@@ -216,4 +220,4 @@ class GUIBuilder:
         """Build status bar"""
         self.widgets['status_bar'] = ttk.Label(parent, text="Ready", relief=tk.FLAT,
                                               font=("Arial", 10), padding=5)
-        self.widgets['status_bar'].grid(row=4, column=0, sticky=(tk.W, tk.E))
+        self.widgets['status_bar'].grid(row=5, column=0, sticky=(tk.W, tk.E))

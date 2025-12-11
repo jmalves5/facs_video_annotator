@@ -68,9 +68,9 @@ class VideoAnnotationApp:
         # Configure styles
         style.configure(".", background=bg_color, foreground=fg_color)
         style.configure("TFrame", background=bg_color)
-        style.configure("TLabel", background=bg_color, foreground=fg_color, font=("Segoe UI", 10))
+        style.configure("TLabel", background=bg_color, foreground=fg_color, font=("Arial", 10))
         style.configure("TLabelframe", background=bg_color, foreground=fg_color, borderwidth=0)
-        style.configure("TLabelframe.Label", background=bg_color, foreground=accent_color, font=("Segoe UI", 11, "bold"))
+        style.configure("TLabelframe.Label", background=bg_color, foreground=accent_color, font=("Arial", 11, "bold"))
         
         # Button styles
         style.configure("TButton", 
@@ -78,7 +78,7 @@ class VideoAnnotationApp:
                        foreground="white",
                        borderwidth=0,
                        focuscolor="none",
-                       font=("Segoe UI", 10))
+                       font=("Arial", 10))
         style.map("TButton",
                  background=[("active", button_hover), ("pressed", accent_color)])
         
@@ -87,13 +87,13 @@ class VideoAnnotationApp:
                        background=accent_color,
                        foreground="white",
                        borderwidth=0,
-                       font=("Segoe UI", 10, "bold"))
+                       font=("Arial", 10, "bold"))
         style.map("Accent.TButton",
                  background=[("active", button_hover), ("pressed", "#005a9e")])
         
         # Entry and Combobox
-        style.configure("TEntry", fieldbackground=secondary_bg, foreground=fg_color, borderwidth=1)
-        style.configure("TCombobox", fieldbackground=secondary_bg, foreground=fg_color, borderwidth=1)
+        style.configure("TEntry", fieldbackground=secondary_bg, foreground=fg_color, borderwidth=1, font=("Arial", 10))
+        style.configure("TCombobox", fieldbackground=secondary_bg, foreground=fg_color, borderwidth=1, font=("Arial", 10))
         style.map("TCombobox", fieldbackground=[("readonly", secondary_bg)])
         
         # Scale (slider)
